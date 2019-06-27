@@ -1,11 +1,10 @@
 import { Router } from 'express';
+import UserController from './app/controllers/UserController';
 
 const routes = new Router();
 
 // TODO: Create user
-routes.post('/users', (req, res) => {
-  return res.json({ message: 'mah oe' });
-});
+routes.post('/users', UserController.store);
 // TODO: Authenticate user
 // TODO: Update user
 

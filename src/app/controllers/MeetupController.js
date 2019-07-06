@@ -1,9 +1,37 @@
 import * as Yup from 'yup';
-import { startOfHour, isBefore, parseISO } from 'date-fns';
+import { Op } from 'sequelize';
+import {
+  startOfHour,
+  isBefore,
+  parseISO,
+  startOfDay,
+  endOfDay,
+} from 'date-fns';
 
 import Meetup from '../models/Meetup';
 
 class MeetupController {
+  async index(req, res) {
+    const { date, page = 1 } = req.query;
+
+    const meetups = await Meetup.findAll({
+      where: date
+        ? {
+            date: {
+              [Op.between]: [
+                startOfDay(parseISO(date)),
+                endOfDay(parseISO(date)),
+              ],
+            },
+          }
+        : null,
+      limit: 10,
+      offset: (page - 1) * 10,
+    });
+
+    return res.json(meetups);
+  }
+
   async store(req, res) {
     /**
      * All fields are required
@@ -14,6 +42,7 @@ class MeetupController {
       location: Yup.string().required(),
       date: Yup.date().required(),
       organizer_id: Yup.number().required(),
+      banner_id: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body))) {

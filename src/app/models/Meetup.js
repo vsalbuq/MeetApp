@@ -8,7 +8,6 @@ class Meetup extends Model {
         description: Sequelize.STRING,
         location: Sequelize.STRING,
         date: Sequelize.DATE,
-        banner_path: Sequelize.STRING,
       },
       { sequelize }
     );
@@ -19,8 +18,8 @@ class Meetup extends Model {
   static associate(models) {
     this.belongsTo(models.User, {
       foreignKey: 'organizer_id',
-      as: 'organizer',
     });
+    this.belongsTo(models.File, { foreignKey: 'banner_id' });
   }
 }
 

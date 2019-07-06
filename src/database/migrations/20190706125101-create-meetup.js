@@ -15,13 +15,23 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      date: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       location: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      banner: {
-        type: Sequelize.STRING,
+      banner_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: {
+          model: 'files',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       organizer_id: {
         type: Sequelize.INTEGER,

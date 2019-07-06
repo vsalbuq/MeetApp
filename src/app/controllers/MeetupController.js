@@ -126,6 +126,28 @@ class MeetupController {
 
     return res.json(meetup);
   }
+
+  async delete(req, res) {
+    const meetup = await Meetup.findByPk(req.params.id);
+
+    if (!meetup) {
+      return res.status(404).json({ error: 'Event not found.' });
+    }
+
+    if (meetup.organizer_id !== req.userId) {
+      return res.status(401).json({ error: 'Not authorized.' });
+    }
+
+    if (isBefore(meetup.date, new Date())) {
+      return res.status(400).json({
+        error: 'You cannot cancel an event that has already happened.',
+      });
+    }
+
+    await meetup.destroy();
+
+    return res.json({ message: 'The event was cancelled.' });
+  }
 }
 
 export default new MeetupController();
